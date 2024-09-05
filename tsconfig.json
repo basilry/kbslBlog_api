@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES6",                           // JavaScript 타겟 버전 설정
+    "module": "commonjs",                      // 모듈 시스템 설정
+    "rootDir": "./src",                        // 소스 파일의 루트 디렉토리
+    "outDir": "./dist",                        // 컴파일된 파일의 출력 디렉토리
+    "strict": true,                            // 엄격한 타입 검사 옵션
+    "esModuleInterop": true,                   // CommonJS와 ES 모듈 간의 호환성 설정
+    "forceConsistentCasingInFileNames": true,  // 파일 이름 대소문자 일관성 강제
+    "skipLibCheck": true,                      // 타입 정의 파일 체크 건너뜀
+    "moduleResolution": "node",                // 모듈 해석 방법 설정
+    "resolveJsonModule": true,                 // JSON 모듈 임포트 지원
+    "isolatedModules": true,                   // 각 파일을 개별 모듈로 컴파일
+    "noEmitOnError": true                      // 컴파일 에러 발생 시 결과물 생성 안 함
+  },
+  "include": ["src"],                          // 컴파일 대상 파일
+  "exclude": ["node_modules", "dist"]          // 컴파일에서 제외할 파일 및 폴더
+}
