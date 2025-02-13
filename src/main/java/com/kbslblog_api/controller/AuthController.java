@@ -1,46 +1,39 @@
 package com.kbslblog_api.controller;
 
-import com.kbslblog_api.dto.UserDto;
-import com.kbslblog_api.model.User;
-import com.kbslblog_api.service.UserService;
+import com.kbslblog_api.config.JwtTokenProvider;
+import com.kbslblog_api.dto.AuthDto;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 
 @Controller
 public class AuthController {
 
-    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AuthenticationManager authenticationManager,
+                          JwtTokenProvider jwtTokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login"; // templates/login.html
-    }
+    @PostMapping("/login")
+    public ResponseEntity<AuthDto> login(@RequestBody AuthDto authRequest) {
+        // 사용자 인증 처리
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-    @GetMapping("/signup")
-    public String signupForm(Model model) {
-        model.addAttribute("userDto", new UserDto());
-        return "signup"; // templates/signup.html
-    }
-
-    @PostMapping("/signup")
-    public String processSignup(@Valid @ModelAttribute("userDto") UserDto userDto, BindingResult result) {
-        if(result.hasErrors()){
-            return "signup";
-        }
-        User existingUser = userService.findByUsername(userDto.getUsername());
-        if(existingUser != null) {
-            result.rejectValue("username", null, "이미 사용 중인 아이디입니다.");
-            return "signup";
-        }
-        userService.save(userDto);
-        return "redirect:/login?signupSuccess";
+        // 인증 성공 시 JWT 토큰 생성
+        String token = jwtTokenProvider.generateToken(authentication);
+        AuthDto response = new AuthDto(token);
+        return ResponseEntity.ok(response);
     }
 }

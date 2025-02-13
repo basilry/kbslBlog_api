@@ -3,8 +3,12 @@ package com.kbslblog_api.config;
 import com.kbslblog_api.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -18,20 +22,18 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // CSRF 보호는 상황에 맞게 설정하세요.
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/signup", "/css/**", "/js/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .permitAll()
-                        .defaultSuccessUrl("/", true)
-                )
-                .logout(logout -> logout.permitAll());
+                .csrf().disable() // REST API를 사용할 때는 CSRF 보호를 비활성화하는 경우가 많습니다.
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**").permitAll()  // 인증 없이 접근 가능한 엔드포인트
+                        .anyRequest().authenticated())
+                // formLogin() 대신 httpBasic() 혹은 커스텀 인증 필터(JWT)를 사용할 수 있습니다.
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
 
@@ -46,5 +48,10 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 }
