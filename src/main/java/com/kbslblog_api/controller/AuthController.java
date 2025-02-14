@@ -32,7 +32,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // 인증 성공 시 JWT 토큰 생성
-        String token = jwtTokenProvider.generateToken(authentication);
+        String token = jwtTokenProvider.createAccessToken(authentication);
         AuthDto response = new AuthDto(token);
         return ResponseEntity.ok(response);
     }
