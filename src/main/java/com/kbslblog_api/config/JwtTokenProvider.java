@@ -51,7 +51,7 @@ public class JwtTokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Constants.EMAIL, user.getMemberId())
+                .claim(Constants.EMAIL, user.getUserId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -68,5 +68,38 @@ public class JwtTokenProvider implements InitializingBean {
                 .compact();
     }
 
-    // JWT 검증 메서드 등 추가 구현 필요
+    public String getToken(String token) {
+        if (token.startsWith("Bearer ")) {
+            return token.substring(7);
+        } else {
+            return token;
+        }
+    }
+
+    public String getIdFromToken(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(getToken(token))
+                .getBody();
+
+        return claims.getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            return true;
+        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+            log.info("Invalid JWT signature");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired JWT token");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported JWT token");
+        } catch (IllegalArgumentException e) {
+            log.info("JWT token is invalid");
+        }
+
+        return false;
+    }
 }
