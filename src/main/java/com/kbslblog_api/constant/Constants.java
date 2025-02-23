@@ -2,6 +2,11 @@ package com.kbslblog_api.constant;
 
 public class Constants {
 
+    /**
+     * Private constructor to prevent instantiation of the Constants class.
+     *
+     * <p>This utility class contains only static constant values and is not meant to be instantiated.</p>
+     */
     private Constants() {
         // 이 클래스는 정적(static) 메서드만 제공합니다.
     }

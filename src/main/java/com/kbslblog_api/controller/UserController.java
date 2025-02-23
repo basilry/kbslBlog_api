@@ -23,7 +23,18 @@ public class UserController {
     // 3. 회원정보 수정
     // 4. 회원탈퇴
     // 5. 회원목록 조회
-    // 6. 회원 상세 조회
+    /**
+     * Registers a new user.
+     *
+     * <p>
+     * Processes a user registration request by validating the provided registration data and delegating
+     * the registration logic to the user service. Returns a standard API result wrapped in a ResponseEntity
+     * with an HTTP 200 OK status.
+     * </p>
+     *
+     * @param userRegisterDto the registration details for the new user
+     * @return a ResponseEntity containing an ApiResult representing the outcome of the registration
+     */
 
     @PostMapping(value = "/register")
     public ResponseEntity<ApiResult> userRegister(@Valid @RequestBody UserRegisterDto userRegisterDto) {

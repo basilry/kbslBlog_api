@@ -45,6 +45,12 @@ public class User {
     private UserRole role;
     private String description;
 
+    /**
+     * Constructs a new User instance with the provided login credentials, personal details, and role information.
+     * <p>
+     * This builder constructor supports object creation by initializing the user's unique login identifier,
+     * password, name, email, phone number, role, and additional description.
+     */
     @Builder
     public User(String loginId, String password, String name, String email, String phoneNumber, UserRole role, String description) {
         this.loginId = loginId;

@@ -9,7 +9,19 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
-    UserDto toUserDto(User entity);
+    /**
+ * Converts a User entity to its corresponding UserDto.
+ *
+ * @param entity the User entity to convert; may be null
+ * @return the corresponding UserDto, or null if the input is null
+ */
+UserDto toUserDto(User entity);
 
-    User toUser(UserRegisterDto entity);
+    /**
+ * Converts a UserRegisterDto into a User entity.
+ *
+ * @param entity the user registration data transfer object containing registration details
+ * @return a User entity with the corresponding information from the registration DTO
+ */
+User toUser(UserRegisterDto entity);
 }

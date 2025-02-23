@@ -14,6 +14,11 @@ public enum ApiStatus {
 
     final int code;
 
+    /**
+     * Constructs an ApiStatus enum constant with the provided HTTP status code.
+     *
+     * @param code the HTTP status code for this enum constant
+     */
     ApiStatus(int code) {
         this.code = code;
     }

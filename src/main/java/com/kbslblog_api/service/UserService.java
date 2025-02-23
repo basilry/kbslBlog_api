@@ -20,6 +20,17 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
+    /**
+     * Registers a new user using the provided registration data.
+     * <p>
+     * This method checks for the uniqueness of the user's login ID, email, and phone number.
+     * If any of these already exists in the system, it throws an AlreadyExistException with
+     * the corresponding error code. Otherwise, the method encodes the user's password,
+     * converts the registration data into a User entity, and saves it to the repository.
+     *
+     * @param userRegisterDto the registration data for the new user, including login ID, email, phone number, and password
+     * @throws AlreadyExistException if the login ID, email, or phone number already exists
+     */
     public void registerUser(UserRegisterDto userRegisterDto) {
         User user = userRepository.findByLoginId(userRegisterDto.getLoginId()).stream().findFirst().orElse(null);
 

@@ -24,6 +24,17 @@ public class TokenService {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUserDetailsService jwtUserDetailsService;
 
+    /**
+     * Saves a token entity using the specified token identifier.
+     * <p>
+     * This method retrieves an existing token from the repository using the given ID. If a token is found,
+     * its current access and refresh tokens are preserved; otherwise, a new token with null token values is created.
+     * The resulting token entity is then saved to the repository.
+     *
+     * @param id the unique identifier of the token
+     * @param accessToken the access token (unused in this implementation)
+     * @param refreshToken the refresh token (unused in this implementation)
+     */
     public void saveToken(String id, String accessToken, String refreshToken) {
         Token token = tokenRepository.findById(id).orElse(null);
 
@@ -36,6 +47,20 @@ public class TokenService {
         tokenRepository.save(tokenBuilder.build());
     }
 
+    /**
+     * Updates the access token associated with a token record using a provided refresh token.
+     * <p>
+     * This method extracts the user ID from the refresh token, retrieves the token record matching
+     * the given access token and refresh token, and validates its existence. It then loads the user's
+     * details, generates a new access token based on the user's authorities, updates the token record,
+     * and returns a TokenDto containing the newly created access token.
+     * </p>
+     *
+     * @param accessToken the current access token associated with the token record
+     * @param refreshToken the refresh token from which the user ID is extracted
+     * @return a TokenDto containing the new access token
+     * @throws UnAuthorizedException if the token record is not found or does not match the provided tokens
+     */
     public TokenDto updateAccessToken(String accessToken, String refreshToken) {
         String id = jwtTokenProvider.getIdFromToken(refreshToken);
 

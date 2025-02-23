@@ -20,6 +20,17 @@ public class JwtUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
 
+    /**
+     * Loads the user's details by login identifier.
+     *
+     * <p>This method retrieves a user from the repository based on the provided login ID.
+     * If a user is found, it converts the user entity into a UserDetails object for
+     * authentication purposes. If no user is found, a UsernameNotFoundException is thrown.
+     *
+     * @param loginId the unique identifier for the user
+     * @return the UserDetails corresponding to the found user
+     * @throws UsernameNotFoundException if no user exists with the specified login ID
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String loginId) {
@@ -28,6 +39,15 @@ public class JwtUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(loginId + " NOT FOUND"));
     }
 
+    /**
+     * Converts a {@code User} entity into a {@code JwtUser} containing the user's authentication details.
+     * <p>
+     * This method extracts the user's role to create a single granted authority and uses it to instantiate
+     * a new {@code JwtUser} with the user's login ID, password, and ID.
+     *
+     * @param user the user entity to be transformed into a Spring Security user details object
+     * @return a {@code JwtUser} with the user's login ID, password, granted authority based on the user's role, and user ID
+     */
     private org.springframework.security.core.userdetails.User createUser(com.kbslblog_api.entity.User user) {
         Collection<GrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority(user.getRole().name())

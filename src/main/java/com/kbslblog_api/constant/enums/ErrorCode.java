@@ -42,6 +42,12 @@ public enum ErrorCode {
     final int code;
     final String message;
 
+    /**
+     * Constructs an ErrorCode with the specified numeric code and error message.
+     *
+     * @param code the numeric error code value
+     * @param message the descriptive error message associated with the error code
+     */
     ErrorCode(int code, String message) {
         this.code = code;
         this.message = message;

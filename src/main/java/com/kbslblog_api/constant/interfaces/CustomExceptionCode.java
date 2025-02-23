@@ -2,7 +2,17 @@ package com.kbslblog_api.constant.interfaces;
 
 public interface CustomExceptionCode {
 
-    int getErrorCode();
+    /**
+ * Returns the error code representing the specific exception condition.
+ *
+ * @return an integer error code.
+ */
+int getErrorCode();
 
-    String getErrorMessage();
+    /**
+ * Returns the error message describing the error condition.
+ *
+ * @return a human-readable message detailing the error
+ */
+String getErrorMessage();
 }

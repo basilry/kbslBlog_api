@@ -24,6 +24,18 @@ public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final TokenService tokenService;
 
+    /**
+     * Authenticates a user with the provided login credentials and issues JWT tokens.
+     * <p>
+     * This method validates the user's login ID and password, and upon successful authentication,
+     * generates an access token and a refresh token. The tokens are stored using the token service and
+     * returned in an ApiResult wrapped in a ResponseEntity.
+     * </p>
+     *
+     * @param loginDto the DTO containing the user's login ID and password
+     * @return a ResponseEntity containing an ApiResult with a TokenDto that includes the generated access and refresh tokens
+     * @throws UnAuthorizedException if authentication fails
+     */
     @PostMapping("/authenticate")
     public ResponseEntity<ApiResult> authorize(@Valid @RequestBody LoginDto loginDto) {
         ApiResult result = new ApiResult();
@@ -52,6 +64,17 @@ public class AuthController {
         }
     }
 
+    /**
+     * Refreshes the access token.
+     *
+     * <p>Validates the provided refresh token and, if valid, updates the access token. The new access token is 
+     * returned wrapped in an ApiResult within a ResponseEntity. If the refresh token is invalid, an
+     * UnAuthorizedException is thrown.
+     *
+     * @param tokenDto the tokens containing the current access and refresh tokens
+     * @return a ResponseEntity with an ApiResult containing the updated access token
+     * @throws UnAuthorizedException if the refresh token validation fails
+     */
     @PostMapping("/refresh")
     public ResponseEntity<ApiResult> refreshToken(@Valid @RequestBody TokenDto tokenDto) {
         ApiResult result = new ApiResult();

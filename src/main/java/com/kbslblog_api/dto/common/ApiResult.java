@@ -22,6 +22,13 @@ public class ApiResult {
     private String errorMessage;
     private Object data;
 
+    /**
+     * Constructs an ApiResult with the specified API status.
+     *
+     * <p>Initializes the result's status field with the provided ApiStatus and sets the code field based on the ApiStatus's code.</p>
+     *
+     * @param apiStatus the API status used to initialize the result's status and code
+     */
     public ApiResult(ApiStatus apiStatus) {
         this.code = apiStatus.getCode();
         this.status = apiStatus;

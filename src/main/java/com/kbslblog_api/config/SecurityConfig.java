@@ -29,11 +29,27 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtTokenProvider jwtTokenProvider;
 
+    /**
+     * Returns a BCryptPasswordEncoder instance for encoding passwords.
+     *
+     * <p>This bean is used to securely hash and verify user credentials within the application.</p>
+     *
+     * @return a BCryptPasswordEncoder instance
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configures and builds the security filter chain for the application.
+     * <p>
+     * This method disables CSRF protection, sets up CORS with dynamic allowed origins (as specified in the application properties) and permits all methods and headers with credentials. It also defines stateless session management, sets public access for endpoints such as "/users/register", "/authenticate", "/refresh", and "/healthCheck", and requires authentication for all other requests. Additionally, it configures exception handling using a JWT authentication entry point and adds a JWT filter to process authentication tokens.
+     * </p>
+     *
+     * @return the configured SecurityFilterChain
+     * @throws Exception if an error occurs during security configuration
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http

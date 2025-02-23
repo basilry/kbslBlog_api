@@ -20,6 +20,21 @@ import java.time.Duration;
 @Component
 public class WebClientConfig {
 
+    /**
+     * Creates and configures a {@link WebClient} bean for making reactive HTTP requests.
+     *
+     * <p>This method builds a customized {@link WebClient} with an underlying {@link HttpClient} that:
+     * <ul>
+     *   <li>Uses a connection provider ("ApiConnections") with a 30-second maximum idle time and background eviction.</li>
+     *   <li>Sets a connection timeout of 10 seconds and a response timeout of 10 seconds.</li>
+     *   <li>Adds read and write timeout handlers, each set to 10 seconds.</li>
+     *   <li>Enables wiretap for HTTP traffic debugging.</li>
+     * </ul>
+     * The resulting {@link WebClient} is further configured with default headers for JSON content.
+     * </p>
+     *
+     * @return a fully configured {@link WebClient} instance
+     */
     @Bean
     public WebClient webClient() {
         HttpClient httpClient = HttpClient.create(
