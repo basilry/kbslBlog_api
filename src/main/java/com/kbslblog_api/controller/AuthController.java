@@ -28,24 +28,28 @@ public class AuthController {
     public ResponseEntity<ApiResult> authorize(@Valid @RequestBody LoginDto loginDto) {
         ApiResult result = new ApiResult();
 
-        UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(loginDto.getId(), loginDto.getPassword());
+        try {
+            UsernamePasswordAuthenticationToken authenticationToken
+                    = new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtTokenProvider.createAccessToken(authentication);
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+            String accessToken = jwtTokenProvider.createAccessToken(authentication);
+            String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
 
-        tokenService.saveToken(loginDto.getId(), accessToken, refreshToken);
+            tokenService.saveToken(loginDto.getLoginId(), accessToken, refreshToken);
 
-        TokenDto tokenDto = new TokenDto();
-        tokenDto.setAccessToken(accessToken);
-        tokenDto.setRefreshToken(refreshToken);
+            TokenDto tokenDto = new TokenDto();
+            tokenDto.setAccessToken(accessToken);
+            tokenDto.setRefreshToken(refreshToken);
 
-        result.setData(tokenDto);
+            result.setData(tokenDto);
 
-        return ResponseEntity.ok().body(result);
+            return ResponseEntity.ok().body(result);
+        } catch (UnAuthorizedException e) {
+            throw new UnAuthorizedException();
+        }
     }
 
     @PostMapping("/refresh")

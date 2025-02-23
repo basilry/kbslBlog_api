@@ -10,11 +10,11 @@ import java.util.Objects;
 @Getter
 public class JwtUser extends User {
 
-    private final Long userId;
+    private final Long id;
 
-    public JwtUser(String id, String password, Collection<? extends GrantedAuthority> authorities, Long userId) {
-        super(id, password, authorities);
-        this.userId = userId;
+    public JwtUser(String userId, String password, Collection<? extends GrantedAuthority> authorities, Long id) {
+        super(userId, password, authorities);
+        this.id = id;
     }
 
     @Override
@@ -23,11 +23,11 @@ public class JwtUser extends User {
         if (!(o instanceof JwtUser that)) { return false; }
         if (!super.equals(o)) { return false; }
 
-        return Objects.equals(userId, that.userId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), userId);
+        return Objects.hash(super.hashCode(), id);
     }
 }

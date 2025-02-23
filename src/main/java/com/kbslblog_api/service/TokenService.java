@@ -14,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Objects;
 
 @Service
 @Transactional
@@ -45,7 +44,7 @@ public class TokenService {
         JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(id);
 
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        JwtUser principal = new JwtUser(id, "", authorities, user.getUserId());
+        JwtUser principal = new JwtUser(id, "", authorities, user.getId());
 
         String newAccessToken = jwtTokenProvider.createAccessToken(new UsernamePasswordAuthenticationToken(principal, null, authorities));
 

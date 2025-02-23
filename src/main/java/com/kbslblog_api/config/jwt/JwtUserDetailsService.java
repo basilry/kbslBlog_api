@@ -10,8 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Component("userDetailsService")
 @RequiredArgsConstructor
@@ -19,18 +19,20 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(final String id) {
-
-        return userRepository.findByUsername(id)
+    public UserDetails loadUserByUsername(final String loginId) {
+        return userRepository.findByLoginId(loginId)
                 .map(this::createUser)
-                .orElseThrow(() -> new UsernameNotFoundException(id + " NOT FOUND"));
+                .orElseThrow(() -> new UsernameNotFoundException(loginId + " NOT FOUND"));
     }
 
     private org.springframework.security.core.userdetails.User createUser(com.kbslblog_api.entity.User user) {
-        Collections<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole().name()));
+        Collection<GrantedAuthority> authorities = Collections.singletonList(
+                new SimpleGrantedAuthority(user.getRole().name())
+        );
 
-        return new JwtUser(user.getId(), user.getPassword(), authorities, user.getUserId());
+        return new JwtUser(user.getLoginId(), user.getPassword(), authorities, user.getId());
     }
 }

@@ -51,7 +51,7 @@ public class JwtTokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Constants.EMAIL, user.getUserId())
+                .claim(Constants.ID, user.getId())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

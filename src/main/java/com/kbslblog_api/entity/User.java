@@ -2,28 +2,31 @@ package com.kbslblog_api.entity;
 
 import com.kbslblog_api.constant.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Nationalized;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
-@Entity
 @Table(name = "users")
+@Entity
 @EntityListeners(AuditingEntityListener.class)
+@DynamicInsert
+@NoArgsConstructor
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    private Long id;
 
     @Column(unique = true)
     @Nationalized
-    private String id;
+    private String loginId;
 
     @Nationalized
     private String name;
@@ -42,8 +45,9 @@ public class User {
     private UserRole role;
     private String description;
 
-    public User(String id, String password, String name, String email, String phoneNumber, UserRole role, String description) {
-        this.id = id;
+    @Builder
+    public User(String loginId, String password, String name, String email, String phoneNumber, UserRole role, String description) {
+        this.loginId = loginId;
         this.password = password;
         this.name = name;
         this.email = email;
