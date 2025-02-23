@@ -30,21 +30,21 @@ public class TokenService {
         Token.TokenBuilder tokenBuilder = Token.builder().id(id);
 
         tokenBuilder
-                .accessToken(token == null ? null : token.getAccessToken())
-                .refreshToken(token == null ? null : token.getRefreshToken());
+                .accessToken(token == null ? null : accessToken)
+                .refreshToken(token == null ? null : refreshToken);
 
         tokenRepository.save(tokenBuilder.build());
     }
 
     public TokenDto updateAccessToken(String accessToken, String refreshToken) {
-        String id = jwtTokenProvider.getIdFromToken(refreshToken);
+        String tokenId = jwtTokenProvider.getIdFromToken(refreshToken);
 
-        Token token = tokenRepository.findByIdAndAccessTokenAndRefreshToken(id, accessToken, refreshToken).orElseThrow(UnAuthorizedException::new);
+        Token token = tokenRepository.findByIdAndAccessTokenAndRefreshToken(tokenId, accessToken, refreshToken).orElseThrow(UnAuthorizedException::new);
 
-        JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(id);
+        JwtUser user = (JwtUser) jwtUserDetailsService.loadUserByUsername(tokenId);
 
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        JwtUser principal = new JwtUser(id, "", authorities, user.getId());
+        JwtUser principal = new JwtUser(tokenId, "", authorities, user.getLoginId(), user.getRole());
 
         String newAccessToken = jwtTokenProvider.createAccessToken(new UsernamePasswordAuthenticationToken(principal, null, authorities));
 

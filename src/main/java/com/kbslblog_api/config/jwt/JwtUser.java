@@ -1,5 +1,6 @@
 package com.kbslblog_api.config.jwt;
 
+import com.kbslblog_api.constant.enums.UserRole;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -10,11 +11,13 @@ import java.util.Objects;
 @Getter
 public class JwtUser extends User {
 
-    private final Long id;
+    private final Long loginId;
+    private final UserRole role;
 
-    public JwtUser(String userId, String password, Collection<? extends GrantedAuthority> authorities, Long id) {
-        super(userId, password, authorities);
-        this.id = id;
+    public JwtUser(String username, String password, Collection<? extends GrantedAuthority> authorities, Long loginId, UserRole role) {
+        super(username, password, authorities);
+        this.loginId = loginId;
+        this.role = role;
     }
 
     @Override
@@ -23,11 +26,11 @@ public class JwtUser extends User {
         if (!(o instanceof JwtUser that)) { return false; }
         if (!super.equals(o)) { return false; }
 
-        return Objects.equals(id, that.id);
+        return Objects.equals(loginId, that.loginId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), id);
+        return Objects.hash(super.hashCode(), loginId);
     }
 }

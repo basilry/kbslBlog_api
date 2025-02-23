@@ -9,7 +9,9 @@ public class Constants {
     /* Constants */
     public static final String ADMIN = "ADMIN";
     public static final String ID = "id";
+    public static final String LOGIN_ID = "loginId";
     public static final String EMAIL = "email";
+    public static final String ROLE = "role";
     public static final String AUTHORIZATION = "Authorization";
     public static final String YYYY_MM_DD = "yyyyMMdd";
 }

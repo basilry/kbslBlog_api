@@ -33,6 +33,6 @@ public class JwtUserDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority(user.getRole().name())
         );
 
-        return new JwtUser(user.getLoginId(), user.getPassword(), authorities, user.getId());
+        return new JwtUser(user.getLoginId(), user.getPassword(), authorities, user.getId(), user.getRole());
     }
 }

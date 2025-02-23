@@ -1,20 +1,18 @@
 package com.kbslblog_api.controller;
 
 import com.kbslblog_api.dto.common.ApiResult;
+import com.kbslblog_api.dto.user.UserDto;
 import com.kbslblog_api.dto.user.UserRegisterDto;
 import com.kbslblog_api.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "users")
+@RequestMapping(value = "/users")
 public class UserController {
     private final UserService userService;
 
@@ -30,6 +28,16 @@ public class UserController {
         ApiResult result = new ApiResult();
 
         userService.registerUser(userRegisterDto);
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping(value = "/me")
+    public ResponseEntity<ApiResult> userGetMe() {
+        ApiResult result = new ApiResult();
+
+        UserDto userDto = userService.getUserMe();
+        result.setData(userDto);
 
         return ResponseEntity.ok().body(result);
     }

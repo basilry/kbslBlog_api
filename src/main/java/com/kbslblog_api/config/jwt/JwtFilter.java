@@ -9,6 +9,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -26,18 +28,22 @@ public class JwtFilter extends GenericFilterBean {
         String jwt = resolveToken(httpServletRequest);
         String requestURI = httpServletRequest.getRequestURI();
 
-//        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
-//            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
-//
-//            if (authentication != null) {
-//                SecurityContextHolder.getContext().setAuthentication(authentication);
-//                log.debug("Save authentication : '{}', uri: {}", authentication.getName(), requestURI);
-//            } else {
-//                log.debug("No authentication, uri: {}", requestURI);
-//            }
-//        } else {
-//            log.debug("No JWT token, uri: {}", requestURI);
-//        }
+        System.out.println(jwt);
+
+        if (StringUtils.hasText(jwt) && jwtTokenProvider.validateToken(jwt)) {
+            Authentication authentication = jwtTokenProvider.getAuthentication(jwt);
+
+            System.out.println(authentication);
+
+            if (authentication != null) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("Save authentication : '{}', uri: {}", authentication.getName(), requestURI);
+            } else {
+                log.debug("No authentication, uri: {}", requestURI);
+            }
+        } else {
+            log.debug("No JWT token, uri: {}", requestURI);
+        }
 
         filterChain.doFilter(servletRequest, servletResponse);
     }

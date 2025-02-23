@@ -2,18 +2,22 @@ package com.kbslblog_api.config;
 
 import com.kbslblog_api.config.jwt.JwtUser;
 import com.kbslblog_api.constant.Constants;
+import com.kbslblog_api.constant.enums.UserRole;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,7 +55,8 @@ public class JwtTokenProvider implements InitializingBean {
         return Jwts.builder()
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities)
-                .claim(Constants.ID, user.getId())
+                .claim(Constants.LOGIN_ID, user.getLoginId())
+                .claim(Constants.ROLE, user.getRole())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -66,6 +71,33 @@ public class JwtTokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    public Authentication getAuthentication(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        System.out.println(claims);
+
+        if (claims.get(AUTHORITIES_KEY) == null || claims.get(Constants.LOGIN_ID) == null) {
+            return null;
+        }
+
+        Collection<? extends GrantedAuthority> authorities =
+                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).toList();
+
+        System.out.println(authorities);
+
+        String tokenId = this.getIdFromToken(token);
+        Long loginId = Long.valueOf(claims.get(Constants.LOGIN_ID).toString());
+        UserRole role = UserRole.valueOf(claims.get(Constants.ROLE).toString());
+
+        JwtUser principal = new JwtUser(tokenId, "", authorities, loginId, role);
+
+        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
     public String getToken(String token) {
@@ -84,6 +116,32 @@ public class JwtTokenProvider implements InitializingBean {
                 .getBody();
 
         return claims.getSubject();
+    }
+
+    public Map<String, Object> getDataFromToken(String token) {
+        Map<String, Object> map = new HashMap<>();
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(getToken(token))
+                .getBody();
+
+
+        String loginId = claims.get(Constants.LOGIN_ID) == null ? null : claims.get(Constants.LOGIN_ID).toString();
+        String role = claims.get(Constants.ROLE) == null ? null : claims.get(Constants.ROLE).toString();
+
+        map.put(Constants.ID, claims.getSubject());
+        map.put(Constants.LOGIN_ID, loginId);
+        map.put(Constants.ROLE, role);
+
+        return map;
+    }
+
+    public Map<String, Object> getDataFromRequest(HttpServletRequest request) {
+        String token = request.getHeader(Constants.AUTHORIZATION);
+
+        return getDataFromToken(token);
     }
 
     public boolean validateToken(String token) {
