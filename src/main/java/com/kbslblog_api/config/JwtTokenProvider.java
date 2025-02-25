@@ -47,16 +47,20 @@ public class JwtTokenProvider implements InitializingBean {
     public String createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
+        log.info("--------JwtTokenProvider createAccessToken authorities: {}", authorities);
+
         JwtUser user = (JwtUser) authentication.getPrincipal();
+
+        log.info("--------JwtTokenProvider createAccessToken user: {}", user);
 
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(user.getLoginId())
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim(Constants.LOGIN_ID, user.getLoginId())
-                .claim(Constants.ROLE, user.getRole())
+                .claim(Constants.ROLE, user.getRole().name())
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
@@ -80,7 +84,7 @@ public class JwtTokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        System.out.println(claims);
+        log.info("--------JwtTokenProvider getAuthentication claims: {}", claims);
 
         if (claims.get(AUTHORITIES_KEY) == null || claims.get(Constants.LOGIN_ID) == null) {
             return null;
@@ -89,11 +93,13 @@ public class JwtTokenProvider implements InitializingBean {
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(",")).map(SimpleGrantedAuthority::new).toList();
 
-        System.out.println(authorities);
+        log.info("--------JwtTokenProvider getAuthentication authorities: {}", authorities);
 
         String tokenId = this.getIdFromToken(token);
-        Long loginId = Long.valueOf(claims.get(Constants.LOGIN_ID).toString());
+        String loginId = claims.get(Constants.LOGIN_ID).toString();
         UserRole role = UserRole.valueOf(claims.get(Constants.ROLE).toString());
+
+        log.info("--------JwtTokenProvider getAuthentication tokenId: {}", tokenId);
 
         JwtUser principal = new JwtUser(tokenId, "", authorities, loginId, role);
 

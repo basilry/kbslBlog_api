@@ -13,11 +13,13 @@ import com.kbslblog_api.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -50,6 +52,8 @@ public class UserService {
 
     public UserDto getUserMe() {
         Map<String, Object> map = jwtTokenProvider.getDataFromRequest(request);
+
+        log.info("map: {}", map);
 
         String tokenLoginId = (String) map.get(Constants.LOGIN_ID);
 

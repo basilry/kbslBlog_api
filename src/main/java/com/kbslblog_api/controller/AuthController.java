@@ -8,6 +8,7 @@ import com.kbslblog_api.exception.UnAuthorizedException;
 import com.kbslblog_api.service.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,7 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
@@ -32,7 +33,12 @@ public class AuthController {
             UsernamePasswordAuthenticationToken authenticationToken
                     = new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
 
+            log.info("-------------AuthController /authenticate authenticationToken: {}", authenticationToken);
+
             Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+            log.info("-------------AuthController /authenticate authentication: {}", authentication);
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             String accessToken = jwtTokenProvider.createAccessToken(authentication);
