@@ -2,6 +2,7 @@ package com.kbslblog_api.config.jwt;
 
 import com.kbslblog_api.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.Collections;
 
+@Slf4j
 @Component("userDetailsService")
 @RequiredArgsConstructor
 public class JwtUserDetailsService implements UserDetailsService {
@@ -23,6 +25,9 @@ public class JwtUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(final String loginId) {
+
+        log.info("--------JwtUserDetailsService loadUserByUsername loginId: {}", loginId);
+
         return userRepository.findByLoginId(loginId)
                 .map(this::createUser)
                 .orElseThrow(() -> new UsernameNotFoundException(loginId + " NOT FOUND"));
@@ -33,6 +38,6 @@ public class JwtUserDetailsService implements UserDetailsService {
                 new SimpleGrantedAuthority(user.getRole().name())
         );
 
-        return new JwtUser(user.getLoginId(), user.getPassword(), authorities, user.getId(), user.getRole());
+        return new JwtUser(user.getLoginId(), user.getPassword(), authorities, user.getLoginId(), user.getRole());
     }
 }
