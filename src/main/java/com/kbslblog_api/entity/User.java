@@ -43,10 +43,14 @@ public class User {
     @Nationalized
     @Enumerated(EnumType.STRING)
     private UserRole role;
+
     private String description;
 
+    private String profileImg;
+
+
     @Builder
-    public User(String loginId, String password, String name, String email, String phoneNumber, UserRole role, String description) {
+    public User(String loginId, String password, String name, String email, String phoneNumber, UserRole role, String description, String profileImg) {
         this.loginId = loginId;
         this.password = password;
         this.name = name;
@@ -54,5 +58,6 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.description = description;
+        this.profileImg = profileImg;
     }
 }

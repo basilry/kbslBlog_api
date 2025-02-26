@@ -29,6 +29,8 @@ public class AuthController {
     public ResponseEntity<ApiResult> authorize(@Valid @RequestBody LoginDto loginDto) {
         ApiResult result = new ApiResult();
 
+        log.info("-------------AuthController /authenticate loginDto: {}", loginDto);
+
         try {
             UsernamePasswordAuthenticationToken authenticationToken
                     = new UsernamePasswordAuthenticationToken(loginDto.getLoginId(), loginDto.getPassword());
