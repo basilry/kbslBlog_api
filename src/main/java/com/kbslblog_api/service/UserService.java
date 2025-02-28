@@ -4,6 +4,7 @@ import com.kbslblog_api.config.JwtTokenProvider;
 import com.kbslblog_api.constant.Constants;
 import com.kbslblog_api.constant.enums.ErrorCode;
 import com.kbslblog_api.dto.user.UserDto;
+import com.kbslblog_api.dto.user.UserProfileUpdateDto;
 import com.kbslblog_api.dto.user.UserRegisterDto;
 import com.kbslblog_api.entity.User;
 import com.kbslblog_api.exception.AlreadyExistException;
@@ -35,17 +36,22 @@ public class UserService {
         User user = userRepository.findByLoginId(userRegisterDto.getLoginId()).stream().findFirst().orElse(null);
 
         if(user != null) {
-            if(userRepository.existsByLoginId(userRegisterDto.getLoginId())) {
+            if (userRepository.existsByLoginId(userRegisterDto.getLoginId())) {
                 throw new AlreadyExistException(ErrorCode.ID_ALREADY_EXISTS);
-            } else if(userRepository.existsByEmail(userRegisterDto.getEmail())) {
+            }
+            if (userRepository.existsByEmail(userRegisterDto.getEmail())) {
                 throw new AlreadyExistException(ErrorCode.EMAIL_ALREADY_EXISTS);
-            } else if(userRepository.existsByPhoneNumber(userRegisterDto.getPhoneNumber())) {
+            }
+            if (userRepository.existsByPhoneNumber(userRegisterDto.getPhoneNumber())) {
                 throw new AlreadyExistException(ErrorCode.PHONE_NUMBER_ALREADY_EXISTS);
             }
+            userRegisterDto.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
+            User newUser = userMapper.saveUserMapper(userRegisterDto);
+            userRepository.save(newUser);
         }
 
         userRegisterDto.setPassword(passwordEncoder.encode(userRegisterDto.getPassword()));
-        User newUser = userMapper.toUser(userRegisterDto);
+        User newUser = userMapper.saveUserMapper(userRegisterDto);
 
         userRepository.save(newUser);
     }
@@ -59,6 +65,26 @@ public class UserService {
 
         User user = userRepository.findByLoginId(tokenLoginId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-        return userMapper.toUserDto(user);
+        return userMapper.getUserMapper(user);
+    }
+
+    public User updateUserProfile(UserProfileUpdateDto userProfileUpdateDto) throws Exception {
+        Map<String, Object> map = jwtTokenProvider.getDataFromRequest(request);
+
+        String tokenLoginId = (String) map.get(Constants.LOGIN_ID);
+
+        User user = userRepository.findByLoginId(tokenLoginId).orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        user.setName(userProfileUpdateDto.getName());
+        user.setEmail(userProfileUpdateDto.getEmail());
+        user.setPhoneNumber(userProfileUpdateDto.getPhoneNumber());
+        user.setDescription(userProfileUpdateDto.getDescription());
+
+        String profileImgBase64 = userProfileUpdateDto.getProfileImg();
+        if (profileImgBase64 != null && !profileImgBase64.isEmpty()) {
+            user.setProfileImg(profileImgBase64);
+        }
+
+        return userRepository.save(user);
     }
 }

@@ -12,13 +12,15 @@ public class UserDto {
     private String phoneNumber;
     private String role;
     private String description;
+    private String profileImg;
 
-    public UserDto(String loginId, String name, String email, String phoneNumber, String role, String description) {
+    public UserDto(String loginId, String name, String email, String phoneNumber, String role, String description, String profileImg) {
         this.loginId = loginId;
         this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
         this.description = description;
+        this.profileImg = profileImg;
     }
 }
