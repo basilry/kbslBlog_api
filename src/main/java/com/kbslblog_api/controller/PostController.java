@@ -1,15 +1,20 @@
 package com.kbslblog_api.controller;
 
+import com.kbslblog_api.constant.Constants;
 import com.kbslblog_api.dto.post.PostDto;
 import com.kbslblog_api.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/posts")
 public class PostController {
+
 
     private final PostService postService;
 
@@ -17,17 +22,17 @@ public class PostController {
         this.postService = postService;
     }
 
-    // 모든 포스트 조회
+
     @GetMapping
-    public ResponseEntity<List<PostDto>> getAllPosts() {
-        List<PostDto> posts = postService.getAllPosts();
+    public ResponseEntity<Page<PostDto>> getAllPosts(
+            @RequestParam(name = "page", defaultValue = "0") int page) {
+        Pageable pageable = PageRequest.of(page, Constants.PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        Page<PostDto> posts = postService.getAllPosts(pageable);
         return ResponseEntity.ok(posts);
     }
 
-    // 특정 포스트 조회
     @GetMapping("/{id}")
     public ResponseEntity<PostDto> getPostById(@PathVariable Long id) {
-        PostDto post = postService.getPostById(id);
-        return ResponseEntity.ok(post);
+        return ResponseEntity.ok(postService.getPostById(id));
     }
 }

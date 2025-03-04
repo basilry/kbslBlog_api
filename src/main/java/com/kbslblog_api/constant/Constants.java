@@ -14,4 +14,7 @@ public class Constants {
     public static final String ROLE = "role";
     public static final String AUTHORIZATION = "Authorization";
     public static final String YYYY_MM_DD = "yyyyMMdd";
+
+    public static final int PAGE_SIZE = 10;
+
 }
