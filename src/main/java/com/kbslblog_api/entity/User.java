@@ -1,8 +1,6 @@
 package com.kbslblog_api.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.kbslblog_api.constant.enums.UserRole;
-import com.kbslblog_api.util.BlobToBase64Serializer;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,8 +9,6 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.Nationalized;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.sql.Blob;
 
 
 @Getter
