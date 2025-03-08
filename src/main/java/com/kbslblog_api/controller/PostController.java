@@ -3,8 +3,10 @@ package com.kbslblog_api.controller;
 import com.kbslblog_api.constant.Constants;
 import com.kbslblog_api.dto.common.ApiResult;
 import com.kbslblog_api.dto.post.PostDto;
+import com.kbslblog_api.dto.post.PostRegisterDto;
 import com.kbslblog_api.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +47,17 @@ public class PostController {
         PostDto post = postService.getPostById(id);
 
         result.setData(post);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResult> createPost(@Valid @RequestBody PostRegisterDto postRegisterDto) {
+        ApiResult result = new ApiResult();
+
+        PostDto createdPost = postService.registerPost(postRegisterDto);
+
+        result.setData(createdPost);
 
         return ResponseEntity.ok(result);
     }
