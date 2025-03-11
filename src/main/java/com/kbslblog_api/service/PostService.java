@@ -30,7 +30,13 @@ public class PostService {
     }
 
     public PostDto getPostById(Long id) {
-        return qPostRepository.findPostById(id);
+        PostDto result = qPostRepository.findPostById(id);
+
+        if(result == null) {
+            throw new NotFoundException(ErrorCode.POST_NOT_FOUND);
+        }
+
+        return result;
     }
 
     public PostDto likePost(Long postId, String clientIp) {
@@ -68,5 +74,12 @@ public class PostService {
                 .updatedAt(savedPost.getUpdatedAt())
                 .likeCount(0L) // 등록 시 초기 좋아요 수 0
                 .build();
+    }
+
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+
+        postRepository.delete(post);
     }
 }
