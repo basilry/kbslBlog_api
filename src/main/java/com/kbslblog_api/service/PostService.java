@@ -3,6 +3,7 @@ package com.kbslblog_api.service;
 import com.kbslblog_api.constant.enums.ErrorCode;
 import com.kbslblog_api.dto.post.PostDto;
 import com.kbslblog_api.dto.post.PostRegisterDto;
+import com.kbslblog_api.dto.post.PostUpdateDto;
 import com.kbslblog_api.entity.Post;
 import com.kbslblog_api.entity.PostLike;
 import com.kbslblog_api.exception.AlreadyExistException;
@@ -73,6 +74,28 @@ public class PostService {
                 .createdAt(savedPost.getCreatedAt())
                 .updatedAt(savedPost.getUpdatedAt())
                 .likeCount(0L) // 등록 시 초기 좋아요 수 0
+                .build();
+    }
+
+    // 포스팅 수정(update) 메서드
+    public PostDto updatePost(Long postId, PostUpdateDto postUpdateDto) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
+
+        post.setTitle(postUpdateDto.getTitle());
+        post.setThumbnail(postUpdateDto.getThumbnail());
+        post.setContent(postUpdateDto.getContent());
+
+        Post updatedPost = postRepository.save(post);
+
+        return PostDto.builder()
+                .id(updatedPost.getId())
+                .title(updatedPost.getTitle())
+                .thumbnail(updatedPost.getThumbnail())
+                .content(updatedPost.getContent())
+                .createdAt(updatedPost.getCreatedAt())
+                .updatedAt(updatedPost.getUpdatedAt())
+                .likeCount(postLikeRepository.countByPost_Id(updatedPost.getId()))
                 .build();
     }
 

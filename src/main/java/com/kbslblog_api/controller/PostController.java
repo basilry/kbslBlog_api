@@ -4,6 +4,7 @@ import com.kbslblog_api.constant.Constants;
 import com.kbslblog_api.dto.common.ApiResult;
 import com.kbslblog_api.dto.post.PostDto;
 import com.kbslblog_api.dto.post.PostRegisterDto;
+import com.kbslblog_api.dto.post.PostUpdateDto;
 import com.kbslblog_api.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -70,6 +71,16 @@ public class PostController {
         PostDto updated = postService.likePost(id, clientIp);
 
         result.setData(updated);
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResult> updatePost(@PathVariable("id") Long id, @Valid @RequestBody PostUpdateDto postUpdateDto) {
+        ApiResult result = new ApiResult();
+
+        PostDto updatedPost = postService.updatePost(id, postUpdateDto);
+        result.setData(updatedPost);
 
         return ResponseEntity.ok(result);
     }
