@@ -1,7 +1,7 @@
 package com.kbslblog_api.controller;
 
 import com.kbslblog_api.dto.common.ApiResult;
-import com.kbslblog_api.service.GoogleDriveService;
+import com.kbslblog_api.service.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,17 +14,17 @@ import java.util.List;
 import java.util.Map;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping( "/google-drive")
-public class GoogleDriveController {
+@RequestMapping( "/file")
+public class FileUploadController {
 
-    private final GoogleDriveService googleDriveService;
+    private final FileUploadService fileUploadService;
 
     private java.io.File convertMultiPartToFile(MultipartFile file) throws IOException {
         java.io.File convFile = new java.io.File(System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename());
@@ -35,11 +35,11 @@ public class GoogleDriveController {
         return convFile;
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/single")
     public ResponseEntity<ApiResult> uploadSingleFile(@RequestParam("file") MultipartFile file) throws Exception {
         ApiResult result = new ApiResult();
 
-        String fileUrl = googleDriveService.uploadFile(convertMultiPartToFile(file));
+        String fileUrl = fileUploadService.uploadFile(convertMultiPartToFile(file));
 
         result.setData(Collections.singletonMap("fileUrl", fileUrl));
 
@@ -47,12 +47,12 @@ public class GoogleDriveController {
     }
 
 
-    @PostMapping("/upload-multi")
+    @PostMapping("/multi")
     public ResponseEntity<ApiResult> uploadBase64Images(@RequestBody Map<String, List<String>> payload) throws Exception {
         ApiResult result = new ApiResult();
 
         List<String> base64Images = payload.get("base64Images");
-        List<String> urls = googleDriveService.uploadMultiFile(base64Images);
+        List<String> urls = fileUploadService.uploadMultiFile(base64Images);
 
         result.setData(Collections.singletonMap("urls", urls));
 

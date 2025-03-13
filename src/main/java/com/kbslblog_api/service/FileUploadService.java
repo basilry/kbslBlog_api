@@ -36,7 +36,7 @@ import com.google.api.client.http.ByteArrayContent;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleDriveService {
+public class FileUploadService {
     private final ImageFileRepository imageFileRepository;
 
     private static final String APPLICATION_NAME = "basilry.kim";
@@ -54,7 +54,7 @@ public class GoogleDriveService {
      */
     private Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws Exception {
         // resources 폴더에서 credentials.json 파일 로드 (파일이 클래스패스에 있어야 합니다)
-        InputStream in = GoogleDriveService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+        InputStream in = FileUploadService.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
         if (in == null) {
             throw new Exception("클라이언트 비밀 파일을 찾을 수 없습니다: " + CREDENTIALS_FILE_PATH);
         }
