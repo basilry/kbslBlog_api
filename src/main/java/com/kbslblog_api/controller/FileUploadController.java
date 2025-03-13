@@ -37,13 +37,22 @@ public class FileUploadController {
 
     @PostMapping("/single")
     public ResponseEntity<ApiResult> uploadSingleFile(@RequestParam("file") MultipartFile file) throws Exception {
+        long startTime = System.currentTimeMillis();
+        
         ApiResult result = new ApiResult();
-
+        
         String fileUrl = fileUploadService.uploadFile(convertMultiPartToFile(file));
-
+        System.out.println("컨트롤러에서 받은 파일 URL: " + fileUrl);
+        
         result.setData(Collections.singletonMap("fileUrl", fileUrl));
-
-        return ResponseEntity.ok(result);
+        
+        long endTime = System.currentTimeMillis();
+        System.out.println("파일 업로드 총 소요 시간: " + (endTime - startTime) + "ms");
+        
+        // 명시적으로 응답 헤더 설정
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(result);
     }
 
 
