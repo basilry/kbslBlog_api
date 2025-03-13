@@ -24,6 +24,15 @@ public class ImageFile {
     @Column(nullable = false)
     private String url;
 
+    private Long fileSize;
+    
+    private String mimeType;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 }
