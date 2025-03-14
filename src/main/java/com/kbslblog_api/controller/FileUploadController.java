@@ -42,7 +42,8 @@ public class FileUploadController {
         
         ApiResult result = new ApiResult();
         
-        String fileUrl = fileUploadService.uploadFile(convertMultiPartToFile(file));
+        // 임시 파일 생성 없이 직접 MultipartFile 처리
+        String fileUrl = fileUploadService.uploadFileDirectly(file);
         System.out.println("컨트롤러에서 받은 파일 URL: " + fileUrl);
         
         result.setData(Collections.singletonMap("fileUrl", fileUrl));
@@ -64,7 +65,8 @@ public class FileUploadController {
         List<String> uploadedUrls = new ArrayList<>();
         
         for (MultipartFile file : files) {
-            String fileUrl = fileUploadService.uploadFile(convertMultiPartToFile(file));
+            // 임시 파일 생성 없이 직접 MultipartFile 처리
+            String fileUrl = fileUploadService.uploadFileDirectly(file);
             uploadedUrls.add(fileUrl);
         }
         
