@@ -31,8 +31,12 @@ public class Post {
     private String title;
 
     @Lob
+    @Column(name = "thumbnail", columnDefinition = "MEDIUMTEXT")
+    private String thumbnail;
+
+    @Lob
     @Nationalized
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String content;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -46,9 +50,10 @@ public class Post {
     private List<PostLike> postLikes = new ArrayList<>();
 
     @Builder
-    public Post(String title, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Post(String title, String content, String thumbnail, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.title = title;
         this.content = content;
+        this.thumbnail = thumbnail;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

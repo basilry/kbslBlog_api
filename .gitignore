@@ -40,3 +40,9 @@ out/
 
 ### generated files ###
 **/src/generated/**
+
+*.json
+
+### service account ###
+credentials.json
+service-account-key.json

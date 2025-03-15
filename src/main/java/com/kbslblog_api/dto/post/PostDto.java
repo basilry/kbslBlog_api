@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class PostDto {
     private Long id;
     private String title;
+    private String thumbnail;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
