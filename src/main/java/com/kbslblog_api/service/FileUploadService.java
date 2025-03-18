@@ -173,6 +173,7 @@ public class FileUploadService {
         
         // 파일 URL 생성
         String fileUrl = "https://drive.google.com/uc?id=" + copiedFile.getId();
+        String proxyUrl = "/proxy/image/" + copiedFile.getId();
         
         // ImageFile 객체 생성 및 저장
         ImageFile newImage = new ImageFile();
@@ -202,7 +203,7 @@ public class FileUploadService {
             }
         });
         
-        return fileUrl;
+        return proxyUrl;
     }
     
     /**
@@ -277,6 +278,7 @@ public class FileUploadService {
             
             // 파일 URL 생성
             String fileUrl = "https://drive.google.com/uc?id=" + copiedFile.getId();
+            String proxyUrl = "/proxy/image/" + copiedFile.getId();
             
             // ImageFile 객체 생성 (아직 저장하지 않음)
             ImageFile newImage = new ImageFile();
@@ -289,7 +291,7 @@ public class FileUploadService {
             imagesToSave.add(newImage);
             
             // 결과 URL 추가
-            uploadedUrls.add(fileUrl);
+            uploadedUrls.add(proxyUrl);
             
             // 권한 설정 및 원본 파일 삭제를 비동기적으로 처리
             final String uploadedFileId = uploadedFile.getId();
@@ -404,6 +406,7 @@ public class FileUploadService {
                         
                         // 파일 URL 생성
                         String fileUrl = "https://drive.google.com/uc?id=" + copiedFile.getId();
+                        String proxyUrl = "/proxy/image/" + copiedFile.getId();
                         
                         // ImageFile 객체 생성 (아직 저장하지 않음)
                         ImageFile newImage = new ImageFile();
@@ -416,7 +419,7 @@ public class FileUploadService {
                         imagesToSave.add(newImage);
                         
                         // 결과 URL 설정
-                        uploadedUrls.set(index, fileUrl);
+                        uploadedUrls.set(index, proxyUrl);
                         
                         // 권한 설정 및 원본 파일 삭제를 비동기적으로 처리
                         final String uploadedFileId = uploadedFile.getId();
