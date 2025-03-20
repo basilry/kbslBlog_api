@@ -60,13 +60,15 @@ public class Post {
 
     @PrePersist
     public void prePersist() {
-        LocalDateTime now = LocalDateTime.now();
+        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
+        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.updatedAt = LocalDateTime.now();
+        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
+        this.updatedAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
     }
 }

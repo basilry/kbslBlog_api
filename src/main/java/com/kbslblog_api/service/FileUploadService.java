@@ -641,7 +641,8 @@ public class FileUploadService {
                 ps.setString(2, image.getUrl());
                 ps.setLong(3, image.getFileSize() != null ? image.getFileSize() : 0);
                 ps.setString(4, image.getMimeType());
-                ps.setObject(5, image.getCreatedAt() != null ? image.getCreatedAt() : java.time.LocalDateTime.now());
+                ps.setObject(5, image.getCreatedAt() != null ? image.getCreatedAt() : 
+                   java.time.LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul")));
             }
             
             @Override
