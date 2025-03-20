@@ -14,6 +14,8 @@ import java.util.Optional;
 public interface ImageFileRepository extends JpaRepository<ImageFile, Long> {
     Optional<ImageFile> findByHash(String hash);
     
+    Optional<ImageFile> findByUrl(String url);
+    
     @Modifying
     @Query(value = "INSERT INTO image_files (hash, url, file_size, mime_type, created_at) VALUES (:hash, :url, :fileSize, :mimeType, :createdAt)", nativeQuery = true)
     void batchInsert(@Param("hash") String hash, @Param("url") String url, 

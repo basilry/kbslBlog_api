@@ -13,6 +13,11 @@ java {
     }
 }
 
+// 컴파일러 매개변수 이름 정보를 유지하도록 설정
+compileJava {
+    options.compilerArgs << '-parameters'
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor

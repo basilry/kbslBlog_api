@@ -11,11 +11,15 @@ import com.kbslblog_api.exception.NotFoundException;
 import com.kbslblog_api.repository.PostLikeRepository;
 import com.kbslblog_api.repository.post.PostRepository;
 import com.kbslblog_api.repository.post.qdsl.QPostRepository;
+import com.kbslblog_api.util.ImageUrlConverter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,9 +29,19 @@ public class PostService {
     private final QPostRepository qPostRepository;
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
+    private final ImageUrlConverter imageUrlConverter;
 
     public Page<PostDto> getAllPosts(Pageable pageable) {
-        return qPostRepository.findAllPosts(pageable);
+        Page<PostDto> posts = qPostRepository.findAllPosts(pageable);
+        
+        // 각 게시물의 내용에서 구글 드라이브 URL을 프록시 URL로 변환
+        return new PageImpl<>(
+            posts.getContent().stream()
+                .map(this::convertPostImageUrls)
+                .collect(Collectors.toList()),
+            pageable,
+            posts.getTotalElements()
+        );
     }
 
     public PostDto getPostById(Long id) {
@@ -37,7 +51,39 @@ public class PostService {
             throw new NotFoundException(ErrorCode.POST_NOT_FOUND);
         }
 
-        return result;
+        // 게시물 내용에서 구글 드라이브 URL을 프록시 URL로 변환
+        return convertPostImageUrls(result);
+    }
+
+    /**
+     * PostDto의 content 필드에서 구글 드라이브 URL을 프록시 URL로 변환합니다.
+     * 
+     * @param postDto 변환할 PostDto
+     * @return 변환된 PostDto
+     */
+    private PostDto convertPostImageUrls(PostDto postDto) {
+        if (postDto == null) {
+            return postDto;
+        }
+        
+        // 컨텐츠 내 이미지 URL 변환
+        String convertedContent = postDto.getContent() != null ? 
+            imageUrlConverter.convertGoogleDriveUrlsToProxyUrls(postDto.getContent()) : null;
+        
+        // 썸네일 URL 변환
+        String convertedThumbnail = postDto.getThumbnail() != null ?
+            imageUrlConverter.convertSingleGoogleDriveUrl(postDto.getThumbnail()) : null;
+        
+        // 변환된 내용으로 새 DTO 생성
+        return PostDto.builder()
+                .id(postDto.getId())
+                .title(postDto.getTitle())
+                .thumbnail(convertedThumbnail)
+                .content(convertedContent)
+                .createdAt(postDto.getCreatedAt())
+                .updatedAt(postDto.getUpdatedAt())
+                .likeCount(postDto.getLikeCount())
+                .build();
     }
 
     public PostDto likePost(Long postId, String clientIp) {
@@ -66,7 +112,7 @@ public class PostService {
         Post savedPost = postRepository.save(post);
 
         // 저장 후 PostDto로 변환하여 반환 (빌더 패턴 사용)
-        return PostDto.builder()
+        PostDto postDto = PostDto.builder()
                 .id(savedPost.getId())
                 .title(savedPost.getTitle())
                 .thumbnail(savedPost.getThumbnail())
@@ -75,6 +121,9 @@ public class PostService {
                 .updatedAt(savedPost.getUpdatedAt())
                 .likeCount(0L) // 등록 시 초기 좋아요 수 0
                 .build();
+                
+        // URL 변환
+        return convertPostImageUrls(postDto);
     }
 
     // 포스팅 수정(update) 메서드
@@ -88,7 +137,7 @@ public class PostService {
 
         Post updatedPost = postRepository.save(post);
 
-        return PostDto.builder()
+        PostDto postDto = PostDto.builder()
                 .id(updatedPost.getId())
                 .title(updatedPost.getTitle())
                 .thumbnail(updatedPost.getThumbnail())
@@ -97,6 +146,9 @@ public class PostService {
                 .updatedAt(updatedPost.getUpdatedAt())
                 .likeCount(postLikeRepository.countByPost_Id(updatedPost.getId()))
                 .build();
+                
+        // URL 변환
+        return convertPostImageUrls(postDto);
     }
 
     public void deletePost(Long postId) {
