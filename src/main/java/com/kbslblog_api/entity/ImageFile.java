@@ -1,5 +1,6 @@
 package com.kbslblog_api.entity;
 
+import com.kbslblog_api.util.DateTimeUtil;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,6 +34,6 @@ public class ImageFile {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        createdAt = DateTimeUtil.nowInSeoul();
     }
 }
