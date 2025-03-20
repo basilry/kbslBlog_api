@@ -1,5 +1,6 @@
 package com.kbslblog_api.entity;
 
+import com.kbslblog_api.util.DateTimeUtil;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,15 +61,15 @@ public class Post {
 
     @PrePersist
     public void prePersist() {
-        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
-        LocalDateTime now = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        // 중앙화된 시간 유틸리티 사용
+        LocalDateTime now = DateTimeUtil.nowInSeoul();
         this.createdAt = now;
         this.updatedAt = now;
     }
 
     @PreUpdate
     public void preUpdate() {
-        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
-        this.updatedAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        // 중앙화된 시간 유틸리티 사용
+        this.updatedAt = DateTimeUtil.nowInSeoul();
     }
 }

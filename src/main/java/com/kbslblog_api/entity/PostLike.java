@@ -1,5 +1,6 @@
 package com.kbslblog_api.entity;
 
+import com.kbslblog_api.util.DateTimeUtil;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -39,7 +40,7 @@ public class PostLike {
 
     @PrePersist
     public void prePersist() {
-        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
-        this.likedAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
+        // 중앙화된 시간 유틸리티 사용
+        this.likedAt = DateTimeUtil.nowInSeoul();
     }
 }
