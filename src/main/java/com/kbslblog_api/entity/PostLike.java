@@ -39,6 +39,7 @@ public class PostLike {
 
     @PrePersist
     public void prePersist() {
-        this.likedAt = LocalDateTime.now();
+        // 현재 시간을 Asia/Seoul 시간대로 명시적 설정
+        this.likedAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
     }
 }

@@ -33,6 +33,6 @@ public class ImageFile {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = LocalDateTime.now(java.time.ZoneId.of("Asia/Seoul"));
     }
 }
