@@ -39,7 +39,8 @@ out/
 *.yml
 
 ### generated files ###
-**/src/generated/**
+**/src/main/generated/**
+src/main/generated/*
 
 *.json
 
