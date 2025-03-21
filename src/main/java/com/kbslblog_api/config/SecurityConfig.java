@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/register").permitAll()
+                        // .requestMatchers("/users/register").permitAll()
                         .requestMatchers("/authenticate").permitAll()
                         .requestMatchers("/refresh").permitAll()
                         .requestMatchers("/career").permitAll()

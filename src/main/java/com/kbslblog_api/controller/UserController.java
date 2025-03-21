@@ -18,14 +18,14 @@ import org.springframework.http.ResponseEntity;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping(value = "/register")
-    public ResponseEntity<ApiResult> userRegister(@Valid @RequestBody UserRegisterDto userRegisterDto) {
-        ApiResult result = new ApiResult();
+    // @PostMapping(value = "/register")
+    // public ResponseEntity<ApiResult> userRegister(@Valid @RequestBody UserRegisterDto userRegisterDto) {
+    //     ApiResult result = new ApiResult();
 
-        userService.registerUser(userRegisterDto);
+    //     userService.registerUser(userRegisterDto);
 
-        return ResponseEntity.ok().body(result);
-    }
+    //     return ResponseEntity.ok().body(result);
+    // }
 
     @GetMapping(value = "/me")
     public ResponseEntity<ApiResult> userGetMe() {

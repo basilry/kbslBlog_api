@@ -80,17 +80,16 @@ basilry.kim API 서버는 블로그 서비스를 위한 강력하고 확장 가�
 
 ### 설치 방법
 ```bash
-# 저장소 클론
-git clone https://github.com/username/kbslBlog_api.git
 
-# 디렉토리 이동
-cd kbslBlog_api
+# 깃 클론, 프로젝트 빌드, 프로젝트 배포
+sh deploy.sh
 
-# 의존성 설치
-./gradlew build
+# 프로젝트 로그 확인
+sh logs.sh
 
-# 서버 실행
-./gradlew bootRun
+# 프로젝트 중단
+sh stop.sh
+
 ```
 
 ## 📅 개발 로드맵
